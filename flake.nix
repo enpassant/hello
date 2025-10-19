@@ -12,6 +12,8 @@
       lib = pkgs.lib;
       jdk = pkgs.openjdk11;
       jre = pkgs.jre11_minimal;
+      pname = "hello-world";
+      version = "1.0.0";
     in {
       artifacts = pkgs.stdenv.mkDerivation {
         name = "maven-repository";
@@ -42,8 +44,8 @@
       packages.${system}.default = let
         repository = self.artifacts;
       in pkgs.stdenv.mkDerivation {
-        pname = "hello-world";
-        version = "1.0.0";
+        inherit pname;
+        inherit version;
         src = ./.;
         # src = lib.cleanSource ./.;
 
@@ -56,12 +58,11 @@
         buildPhase = ''
           export JAVA_HOME=${jdk.home}
           echo "Building Maven project..."
-          mvn -Dmaven.repo.local=${repository} -DskipScm=true -DskipTests clean package
+          mvn --offline -Dmaven.repo.local=${repository} -DskipScm=true -DskipTests clean package
         '';
 
         installPhase = ''
-          mkdir -p $out
-          cp target/*.jar $out/ || echo "No JARs found in target/"
+          install -Dm644 -t $out/share/java target/*.jar || echo "No JARs found in target/"
         '';
 
         meta = with pkgs.lib; {
@@ -93,7 +94,7 @@
           pkgs.dockerTools.binSh
         ];
         config = {
-          Cmd = [ "/bin/java" "-jar" "/hello-world-1.0.0.jar" ];
+          Cmd = [ "/bin/java" "-jar" "/share/java/${pname}-${version}.jar" ];
         };
       };
     };
