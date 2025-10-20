@@ -1,50 +1,70 @@
-# hello
+# Hello
 
-Hello World sample maven project with nix flake build, develop and make podman (docker) package.
+Sample “Hello World” Maven project with Nix flake build, development environment, and Podman (Docker) packaging.
 
-## Usages
+## Usage
 
-### Build jar artifacts repository package
+### Build JAR artifacts repository package
 
-`nix build github:enpassant/hello#artifacts`
+```bash
+nix build github:enpassant/hello#artifacts
+```
 
-The result is in the `result` package. Eg. one depth folders:
+The result will be in the `result` directory.  
+Example of top-level folders:
 
->  aopalliance  asm  com  commons-io  javax  net  org 
+> aopalliance  asm  com  commons-io  javax  net  org
 
-### Build hello-world jar artifact package
+### Build the hello-world JAR package
 
-`nix build github:enpassant/hello`
+```bash
+nix build github:enpassant/hello
+```
 
-The result is in the `result` package:
+The resulting file can be found at:
 
-> ./result/share/java/hello-world-1.0.0.jar
+> `./result/share/java/hello-world-1.0.0.jar`
 
-### Use developer shell
+### Use the developer shell
 
-1. Clone the project
-`git clone https://github.com/enpassant/hello.git`
-2. Enter into the project folder
-`cd hello`
-3. Make developer shell
-`nix develop github:enpassant/hello`
-4. Modify the code, and build with
-`build` or `mvn clean package` commands
+1. Clone the project:
+   ```bash
+   git clone https://github.com/enpassant/hello.git
+   ```
+2. Enter the project folder:
+   ```bash
+   cd hello
+   ```
+3. Start the developer shell:
+   ```bash
+   nix develop github:enpassant/hello
+   ```
+4. Modify the code and build it using:
+   ```bash
+   build
+   # or
+   mvn clean package
+   ```
 
-### Build docker (podman) image and load into docker (podman)
+### Build and load the Podman (Docker) image
 
-`nix build -v github:enpassant/hello#dockerImage && ./result | podman`
+```bash
+nix build -v github:enpassant/hello#dockerImage && ./result | podman
+```
 
-Check the result:
+Check the result with:
 
-`podman images`
+```bash
+podman images
+```
 
-### Use with local (cloned) project
+### Use with a local (cloned) project
 
-In the hello folder you can use this commands:
+In the `hello` folder, you can run the following commands:
 
-`nix build #artifacts`
-`nix build`
-`nix develop`
-`nix build -v #dockerImage && ./result | podman`
-
+```bash
+nix build #artifacts
+nix build
+nix develop
+nix build -v #dockerImage && ./result | podman
+```
