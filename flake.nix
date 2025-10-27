@@ -10,8 +10,8 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
       lib = pkgs.lib;
-      jdk = pkgs.openjdk11;
-      jre = pkgs.jre11_minimal;
+      jdk = pkgs.openjdk21;
+      jre = pkgs.jre21_minimal;
       pname = "hello-world";
       version = "1.0.0";
     in {
@@ -77,8 +77,10 @@
         buildInputs = [ pkgs.maven jdk ];
         shellHook = ''
           export JAVA_HOME=${jdk.home}
+          CURRDIR=$PWD
           alias mvn='mvn -Dmaven.repo.local=${repository}'
           alias build='mvn clean package'
+          alias run='java -jar $CURRDIR/target/hello-world-1.0.0.jar'
           echo "Maven dev shell ready. Run 'mvn package' manually if needed."
         '';
       };
@@ -94,7 +96,7 @@
           pkgs.dockerTools.binSh
         ];
         config = {
-          Cmd = [ "/bin/java" "-jar" "/share/java/${pname}-${version}.jar" ];
+          Cmd = [ "/bin/java" "-XX:+UseContainerSupport" "-Xmx512m" "-Xms512m" "-jar" "/share/java/${pname}-${version}.jar" ];
         };
       };
     };
